@@ -1,31 +1,35 @@
 <template>
 	<div class="main">
-		<section class="campo">
-			<label>Nome</label>
-			<input v-model="name" type="text">
-			<br>
-			<label>Idade</label>
-			<input v-model="age" type="text">
-			<br>
-			<button @click="enviar">Enviar</button>
-		</section>
-		<section class="selecao">
-			<label>Ordenar por:</label>
-			<select v-model="configs.orderBy">
-				<option value="name">nome</option>
-				<option value="age">Idade</option>
-			</select>
-			<br>
-			<label>Ordem</label>
-			<select v-model="configs.order">
-				<option value="asc">Crescente</option>
-				<option value="desc">Decrescente</option>
-			</select>
+			<section class="campo">
+				<label>Nome</label>
+				<input v-model="name" type="text">
 				<br>
-				<label>Filtro</label>
-				<input type="text" v-model="configs.filter" placeholder="Filtrar por nome">
-		</section>
-		<ListaAluno v-bind:ordenedStudents="ordenedStudents"></ListaAluno>
+				<label>Idade</label>
+				<input v-model="age" type="text">
+				<br>
+				<button @click="enviar">Enviar</button>
+			</section>
+			<section class="selecao">
+				<label>Ordenar por:</label>
+				<select v-model="configs.orderBy">
+					<option value="name">nome</option>
+					<option value="age">Idade</option>
+				</select>
+				<br>
+				<label>Ordem</label>
+				<select v-model="configs.order">
+					<option value="asc">Crescente</option>
+					<option value="desc">Decrescente</option>
+				</select>
+					<br>
+					<label>Filtro</label>
+					<input type="text" v-model="configs.filter" placeholder="Filtrar por nome">
+			</section>
+		<ListaAluno
+			v-bind:ordenedStudents="ordenedStudents"
+			@removeAluno="value => {removeAluno = value}"
+			@remove="value => {remove = value}"
+		></ListaAluno>
 	</div>
 </template>
 <script>
@@ -37,33 +41,44 @@ export default{
 		return{
 			name:'',
 			age:'',
+			remove:false,
+			removeAluno:'',
 			configs:{
 				orderBy:'name',
 				order:'asc',//desc
 				filter:''
 			},
 			studants:[
-			{
-				name:'Renan',
-				age:'33'
-			},
-			{
-				name:'Caio',
-				age:'16' 
-			},
-			{
-				name:'Rômulo',
-				age:'30'
+				{
+					name:'Renan',
+					age:'33'
+				},
+				{
+					name:'Caio',
+					age:'16' 
+				},
+				{
+					name:'Rômulo',
+					age:'30'
 
-			},
-			{
-				name:'Anna',
-				age:'25'
-			}
-
+				},
+				{
+					name:'Anna',
+					age:'25'
+				}
 			]
 
 		}
+	},
+	watch:{
+		removeAluno(){
+			if (this.remove === true) {
+				this.studants.splice(this.removeAluno,1)
+				this.remove = false
+				this.removeAluno = ''
+			}	
+		}
+
 	},
 	computed:{
 		ordenedStudents(){
@@ -81,6 +96,8 @@ export default{
 				name: this.name,
 				age: this.age
 			})
+			this.name = ''
+			this.age = ''
 		}
 	},
 	components:{
@@ -97,17 +114,38 @@ export default{
 		font-size: 20px;
 	}
 	.main{
-		background: #00f url(https://i3.wp.com/www.zastavki.com/pictures/originals/2012/Backgrounds_Water_drops_035501_.jpg)no-repeat fixed ;
+		max-width: 620px;
+		max-height: 520px;
+		border-color: #6dccab;
+		border:40px;
+		background: #6dccab;
 		background-size: cover;
 		display: flex;
-		flex-wrap: wrap;
+		flex-direction: row;
+	}
+	/*.esquerda{
+		display: flex;
+		flex-direction: wrap;
+	}*/
+	.lista{
+		background-color: green;
+		display: flex;
+		max-width: 300vh;
+		max-height: 520px;
+		margin:0px;
+		padding: 0px;
+		align-content: flex-end;
+		color: white;
+		justify-content: flex-start;
+		list-style: none;
 	}
 	.campo{
 		display: flex;
 		background-color: orange;
-		width: 250px;
-		margin:30px;
-		padding: 10px;
+		max-width: 50%;
+		max-height: 360px;
+		margin: 10px;
+		padding: 5px;
 		align-items: center;
 		flex-direction: column;
 		
@@ -115,9 +153,10 @@ export default{
 	.selecao{
 		display: flex;
 		background-color: purple;
-		width: 250px;
-		margin:30px;
-		padding: 10px;
+		max-width: 50%;
+		max-height: 360px;
+		margin: 10px;
+		padding: 5px;
 		color: white;
 		align-items: center;
 		flex-direction: column;
